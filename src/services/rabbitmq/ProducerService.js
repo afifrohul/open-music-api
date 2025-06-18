@@ -14,6 +14,8 @@ const ProducerService = {
       connection.close();
     }, 1000);
   },
+
+  
 };
 
 module.exports = ProducerService;
