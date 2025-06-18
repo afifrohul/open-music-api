@@ -26,7 +26,7 @@ class AlbumsService {
 
   async getAlbumById(id) {
     const query = {
-      text: 'SELECT * FROM albums WHERE id = $1',
+      text: 'SELECT id, name, year, cover FROM albums WHERE id = $1',
       values: [id],
     };
     const result = await this._pool.query(query);
@@ -35,7 +35,17 @@ class AlbumsService {
       throw new NotFoundError('Album tidak ditemukan');
     }
 
-    return result.rows[0];
+    const album = result.rows[0];
+
+    // Tambahkan coverUrl lengkap jika cover ada
+    return {
+      id: album.id,
+      name: album.name,
+      year: album.year,
+      coverUrl: album.cover 
+        ? `http://${process.env.HOST}:${process.env.PORT}/upload/images/${album.cover}`
+        : null,
+    };
   }
 
   async editAlbumById(id, { name, year }) {
